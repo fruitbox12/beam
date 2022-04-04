@@ -8,6 +8,7 @@ var beam = new Hyperbeam()
 const { count } = require('console');
 const e = require('cors');
 // CRUD operations
+process.stdin.pipe(beam).pipe(process.stdout);
 
 const getKey = async (req, res, next) => { 
     
@@ -25,15 +26,19 @@ const getKey = async (req, res, next) => {
 }
 
 const connect = async (req, res, next) => {
-    let key = req.body.key;
+    let key = String(req.body.key);
     if (key == beam.key) {
         res.json({message: "Hyper beam is already connected to key"});
     }
     else {
-        beam = new Hyperbeam(key);
+        beam = new Hyperbeam(key)
         if (beam.key == key) {
             
             res.json({message: "Hyper beam successfully connected to new key: " + beam.key});
+            beam.push("Testing connection")
+            process.stdin.pipe(beam).pipe(process.stdout)
+
+            
         }
         else {
             res.status(500).json(

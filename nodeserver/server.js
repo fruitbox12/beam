@@ -12,8 +12,6 @@ global.serverPort = 5000;
 // winningPlan is useful for checking whether MongoDB used an index for the query or not.
 // stage: 'COLLSCAN' means an index was NOT used.
 // inputStage: ... stage: 'IXSCAN' means an index was used, its name is given by the indexName property.
-global.explain = false;
-const express = require('express');
 
 
 // Schema based data modeling for mongodb
@@ -26,8 +24,7 @@ const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const HttpError = require('./models/http-error')
-const mongoose = require('mongoose');
-
+const express = require('express');
 const connectionRoutes = require('./routes/connection-routes')
 // Custom error class 
 
