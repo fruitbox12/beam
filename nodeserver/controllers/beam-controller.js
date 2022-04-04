@@ -35,8 +35,6 @@ const connect = async (req, res, next) => {
         if (beam.key == key) {
             
             res.json({message: "Hyper beam successfully connected to new key: " + beam.key});
-            beam.push("Testing connection")
-            process.stdin.pipe(beam).pipe(process.stdout)
 
             
         }
