@@ -4,6 +4,7 @@ const uuid = require('uuid').v4;
 const { validationResult } = require('express-validator');
 const Hyperbeam = require('hyperbeam')
 var beam = new Hyperbeam()
+const b64 = require('b64');
 
 const { count } = require('console');
 const e = require('cors');
@@ -47,7 +48,17 @@ const connect = async (req, res, next) => {
         }
     }
 }
+function encode(data)  {
+    let uEnv = b64.base64urlEncode(data);
+    return String(uEnv)
+}
+
+const push = async (req, res, next) => {
+    let data = encode(String(req.body.data));
+    beam.push(data);
+    res.json({base64String: data});
+}
 
 
 
-module.exports = {getKey, connect };
+module.exports = {getKey, connect, push};
