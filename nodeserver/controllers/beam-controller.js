@@ -3,21 +3,34 @@ const uuid = require('uuid').v4;
 // Use object de-structuring
 const b64 = require('b64');
 const Hyperswarm = require('hyperswarm')
-const swarm = new Hyperswarm()
+var currentSize = 32;
+var currentFill = "hello world";
+var topic = Buffer.alloc(currentSize).fill(currentFill) // A topic must be 32 bytes
+
+
+const swarm = new Hyperswarm();
+
+const create = async () => {
+    const discovery = swarm.join(topic, { server: true, client: false })
+    await discovery.flushed() // Waits for the topic to be fully announced on the DHT
+}
 // CRUD operations
+create();
 
 swarm.on('connection', (conn, info) => {
     // swarm1 will receive server connections
-    conn.write('Successful connection to peer: ' + info.publicKey);
+    conn.write('Successful connection to peer:');
     conn.end();
 });
 
+swarm.on('connection', (conn, info) => {
+    conn.on('data', data => console.log('client got message:', data.toString()))
+})
 
 const getKey = async (req, res, next) => { 
-    
     if (swarm.keyPair) {
         // Return id getter from _id property
-        res.json({key: swarm.keyPair});
+        res.json({size: currentSize, fill: currentFill});
     }
     else {
         res.status(500).json(
@@ -29,15 +42,17 @@ const getKey = async (req, res, next) => {
 }
 
 const connect = async (req, res, next) => {
-    let key = String(req.body.key);
-    if (key == beam.key) {
-        res.json({message: "Hyper core is already connected to key"});
+    let {size, fill} = String(req.body);
+    let newTopic = Buffer.alloc(size).fill(fill);
+    if (currentSize == size && currentFill == fill) {
+        res.json({message: "Hyper core is already connected to topic"});
     }
     else {
-        swarm.joinPeer(key);
-        res.json({message: "Hyper core successfully connected to new key: " + beam.key});
-
-       
+        swarm.join(newTopic, { server: false, client: true })
+        topic = newTopic;
+        currentSize = size;
+        currentFill = fill;
+        res.json({message: "Hyper core successfully connected to new topic: " + newTopic}); 
     }
 }
 function encode(data)  {

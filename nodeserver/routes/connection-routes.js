@@ -37,11 +37,16 @@ router.patch(
     [
         // Validation chain: check()..trim().not().isEmpty().withMessage()
        
-            check('key')
+            check('size')
             .trim()
             .not()
             .isEmpty()
-            .withMessage("Connection key is required")
+            .withMessage("Size is required"),
+            check('fill')
+            .trim()
+            .not()
+            .isEmpty()
+            .withMessage("fill is required"),
     ],    
     beamController.connect
 );
