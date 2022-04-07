@@ -22,8 +22,17 @@ const router = Router();
 // '/' is a suffix to the prefix specified in server.js app.use()
 // Route using dynamic params (start with : and seperate with &)
 router.get(['/:cid', '/'], cors(), beamController.getKey);
+router.post( 
+    '/node', cors(), 
+    [
+        check('data')
+        .isEmpty()
+        .withMessage("Data is required")
+    ], 
+    beamController.push
+);
 
-router.post(
+router.patch(
     '/', cors(),
     [
         // Validation chain: check()..trim().not().isEmpty().withMessage()
@@ -33,9 +42,11 @@ router.post(
             .not()
             .isEmpty()
             .withMessage("Connection key is required")
-    ],        
+    ],    
     beamController.connect
 );
+
+
 
 
 
