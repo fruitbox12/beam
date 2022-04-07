@@ -15,6 +15,7 @@ const create = async () => {
     await discovery.flushed() // Waits for the topic to be fully announced on the DHT
 }
 // CRUD operations
+
 create();
 
 swarm.on('connection', (conn, info) => {
