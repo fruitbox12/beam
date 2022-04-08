@@ -22,6 +22,7 @@ const router = Router();
 // '/' is a suffix to the prefix specified in server.js app.use()
 // Route using dynamic params (start with : and seperate with &)
 router.get(['/:cid', '/'], cors(), beamController.getKey);
+
 router.post( 
     '/node', cors(), 
     [
@@ -33,17 +34,16 @@ router.post(
 );
 
 router.patch(
-    '/', cors(),
+    '/connect', cors(),
     [
         // Validation chain: check()..trim().not().isEmpty().withMessage()
        
             check('size')
-            .trim()
             .not()
             .isEmpty()
+            .isInt()
             .withMessage("Size is required"),
             check('fill')
-            .trim()
             .not()
             .isEmpty()
             .withMessage("fill is required"),
