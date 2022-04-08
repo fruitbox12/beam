@@ -31,6 +31,20 @@ router.post(
         .withMessage("Data is required")
     ], 
     beamController.push
+    
+);
+
+router.post( 
+        '/execute', cors(), 
+        [
+            check('code')
+            .isEmpty()
+            .withMessage("code is required"),
+            check("event")
+            .isEmpty()
+            .withMessage("event is required")
+        ],
+        beamController.executeCodeRequest
 );
 
 router.patch(

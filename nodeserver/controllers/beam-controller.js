@@ -1,6 +1,5 @@
 // Use object de-structuring
 const b64 = require('b64');
-const exec  = require("child_process");
 const Hyperswarm = require('hyperswarm')
 const request = require('request');
 
@@ -37,11 +36,13 @@ const executeCodeRequest = async (req, res, next) => {
         "url": "http://localhost:"+ global.serverPort + "/execute?code=" + code + "&event=" + event,
     }
 
-    request.get(settings, function (error, response) {
-        console.error('error:', error); // Print the error if one occurred
-        console.log('statusCode:', response); // Print the response status code if a response was received
+    request.get(settings, function (err, response) {
+        res.json( 
+            {
+                error: err,
+                statusCode: response
+            }); 
     });
-
 }
 
 
@@ -87,4 +88,4 @@ const push = async (req, res, next) => {
 
 
 
-module.exports = {getKey, connect, push};
+module.exports = {getKey, connect, push, executeCodeRequest};
