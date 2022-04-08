@@ -1,8 +1,9 @@
-const uuid = require('uuid').v4;
-
 // Use object de-structuring
 const b64 = require('b64');
+const exec  = require("child_process");
 const Hyperswarm = require('hyperswarm')
+const request = require('request');
+
 var currentSize = 32;
 var currentFill = "hello world";
 var topic = Buffer.alloc(currentSize).fill(currentFill) // A topic must be 32 bytes
@@ -27,6 +28,24 @@ swarm.on('connection', (conn, info) => {
 swarm.on('connection', (conn, info) => {
     conn.on('data', data => console.log('client got message:', data.toString()))
 })
+
+const executeCodeRequest = async (req, res, next) => {
+
+    let {code, event } = req.body;
+
+    
+    var settings = {
+        "url": "http://localhost:"+ global.serverPort + "/execute?code=" + code + "&event=" + event,
+    }
+
+    request.get(settings, function (error, response, body) {
+        console.error('error:', error); // Print the error if one occurred
+        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+    });
+
+  
+}
+
 
 const getKey = async (req, res, next) => { 
     if (swarm.keyPair) {
