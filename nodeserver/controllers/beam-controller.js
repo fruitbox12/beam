@@ -4,7 +4,7 @@ const Hyperswarm = require('hyperswarm')
 const request = require('request');
 
 var currentSize = 32;
-var currentFill = "hello world";
+var currentFill = "PENISLOVER32";
 var topic = Buffer.alloc(currentSize).fill(currentFill) // A topic must be 32 bytes
 
 
@@ -68,7 +68,8 @@ const connect = async (req, res, next) => {
         res.json({message: "Hyper core is already connected to topic"});
     }
     else {
-        swarm.join(newTopic, { server: false, client: true })
+        const discovery = swarm.join(newTopic, { server: false, client: true })
+        await discovery.flushed();
         topic = newTopic;
         currentSize = size;
         currentFill = fill;
@@ -80,7 +81,7 @@ function encode(data)  {
     return String(uEnv)
 }
 
-const push = async (req, res, next) => {
+const message = async (req, res, next) => {
     let data = encode(String(req.body.data));
     swarm.write(data);
     res.json({base64String: data});
@@ -88,4 +89,4 @@ const push = async (req, res, next) => {
 
 
 
-module.exports = {getKey, connect, push, executeCodeRequest};
+module.exports = {getKey, connect, message, executeCodeRequest};

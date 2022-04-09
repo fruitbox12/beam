@@ -21,7 +21,7 @@ const router = Router();
 // From server.js app.use(...)
 // '/' is a suffix to the prefix specified in server.js app.use()
 // Route using dynamic params (start with : and seperate with &)
-router.get(['/:cid', '/'], cors(), beamController.getKey);
+router.get(['/id'], cors(), beamController.getKey);
 
 router.post( 
     '/node', cors(), 
@@ -30,7 +30,7 @@ router.post(
         .isEmpty()
         .withMessage("Data is required")
     ], 
-    beamController.push
+    beamController.message
     
 );
 
