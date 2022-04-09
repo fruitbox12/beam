@@ -37,7 +37,7 @@ app.use(morgan('tiny'));
 app.use(bodyParser.json());
 
 // Route prefix
-app.use('/api/connect', connectionRoutes);
+app.use('/api', connectionRoutes);
 
 // Catch unsupported routes (http 400 - bad request) Must come after all registered middleware routes
 app.use((req, res, next) => {

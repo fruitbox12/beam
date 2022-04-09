@@ -61,7 +61,7 @@ const getKey = async (req, res, next) => {
 }
 
 const connect = async (req, res, next) => {
-    let {size, fill} = String(req.body);
+    let {size, fill} = req.body;
     let newTopic = Buffer.alloc(size).fill(fill);
 
     if (currentSize == size && currentFill == fill) {
