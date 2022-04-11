@@ -6,7 +6,7 @@ const { exec } = require("child_process");
 
 
 var currentSize = 32;
-var currentFill = "PENISLOVER32";
+var currentFill = "PENISLOVER";
 var topic = Buffer.alloc(currentSize).fill(currentFill) // A topic must be 32 bytes
 
 
@@ -22,9 +22,18 @@ create();
 
 swarm.on('connection', (conn, info) => {
     // swarm will receive server connections
+    const {
+        priority,
+        status,
+        retries,
+        peer,
+        client
+      } = info
+    
+      if (client) process.stdin.pipe(conn)
+      else conn.pipe(process.stdout)
     conn.write('Successful connection to peer');
     conn.on('data', data => console.log('client got message:', data.toString()))
-    conn.end();
 });
 
 const lambda = async (req, res, next) => {
@@ -82,8 +91,7 @@ const connect = async (req, res, next) => {
         res.json({message: "Hyper core is already connected to topic"});
     }
     else {
-        const discovery = swarm.join(newTopic, { server: false, client: true })
-        await discovery.flushed();
+        swarm.join(newTopic, { server: false, client: true, announce: true})
         topic = newTopic;
         currentSize = size;
         currentFill = fill;
