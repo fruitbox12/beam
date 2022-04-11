@@ -2,6 +2,8 @@
 const b64 = require('b64');
 const Hyperswarm = require('hyperswarm')
 const request = require('request');
+const { exec } = require("child_process");
+
 
 var currentSize = 32;
 var currentFill = "PENISLOVER32";
@@ -25,7 +27,20 @@ swarm.on('connection', (conn, info) => {
     conn.end();
 });
 
+const lambda = async (req, res, next) => {
 
+    exec("docker run node:alpine", (error, stdout, stderr) => {
+        if (error) {
+            return res.status(400).json({ error: error.message});
+           
+        }
+        if (stderr) {
+            return res.status(400).json({ stderr: stderr});
+        }
+        return res.json({ message: stdout});
+    });
+
+}
 
 const executeCodeRequest = async (req, res, next) => {
 
@@ -44,7 +59,6 @@ const executeCodeRequest = async (req, res, next) => {
             }); 
     });
 }
-
 
 const getKey = async (req, res, next) => { 
     if (swarm.keyPair) {
@@ -76,10 +90,17 @@ const connect = async (req, res, next) => {
         res.json({message: "Hyper core successfully connected to new topic: " + newTopic}); 
     }
 }
+
 function encode(data)  {
     let uEnv = b64.base64urlEncode(data);
     return String(uEnv)
 }
+
+function decode(encoded)  {
+    let uEnv = b64.base64urlDecode(encoded);
+    return String(uEnv)
+}
+
 
 const message = async (req, res, next) => {
     let data = encode(String(req.body.data));
@@ -87,6 +108,4 @@ const message = async (req, res, next) => {
     res.json({base64String: data});
 }
 
-
-
-module.exports = {getKey, connect, message, executeCodeRequest};
+module.exports = {getKey, connect, message, encode, decode, executeCodeRequest, lambda};

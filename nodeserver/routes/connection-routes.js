@@ -23,6 +23,18 @@ const router = Router();
 // Route using dynamic params (start with : and seperate with &)
 router.get(['/id'], cors(), beamController.getKey);
 
+
+
+router.post(
+    '/lambda', cors(), 
+    [
+        check('code')
+        .isEmpty()
+        .withMessage('Code is required')
+    ],
+    beamController.lambda
+);
+
 router.post( 
     '/node', cors(), 
     [
@@ -64,9 +76,5 @@ router.patch(
     ],    
     beamController.connect
 );
-
-
-
-
 
 module.exports = router;
