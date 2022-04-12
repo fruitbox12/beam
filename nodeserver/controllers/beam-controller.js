@@ -6,7 +6,7 @@ const { exec } = require("child_process");
 
 
 var currentSize = 32;
-var currentFill = "PENISLOVER";
+var currentFill = "PENISLOVE";
 var topic = Buffer.alloc(currentSize).fill(currentFill) // A topic must be 32 bytes
 
 
@@ -22,16 +22,9 @@ create();
 
 swarm.on('connection', (conn, info) => {
     // swarm will receive server connections
-    const {
-        priority,
-        status,
-        retries,
-        peer,
-        client
-      } = info
-    
-      if (client) process.stdin.pipe(conn)
-      else conn.pipe(process.stdout)
+
+    process.stdin.pipe(conn).pipe(process.stdout);
+
     conn.write('Successful connection to peer');
     conn.on('data', data => console.log('client got message:', data.toString()))
 });
