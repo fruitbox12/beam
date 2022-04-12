@@ -1,7 +1,7 @@
 // Variables created as part of global object are available everywhere in the project.
 // Using Global Variables in Node.js
 // https://stackabuse.com/using-global-variables-in-node-js/
-global.serverPort = 5001;
+global.serverPort = 5000;
 // Using MongoDB Explain with Mongoose
 // https://masteringjs.io/tutorials/mongoose/explain
 // Parameters (explainations)
