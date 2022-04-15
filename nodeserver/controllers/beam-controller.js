@@ -1,32 +1,32 @@
 // Use object de-structuring
 const b64 = require('b64');
-const Hyperswarm = require('hyperswarm')
+const hyperswarm = require('hyperswarm-web')
 const request = require('request');
 const { exec } = require("child_process");
+const crypto = require('crypto')
 
 
-var currentSize = 32;
-var currentFill = "PENISLOVE";
-var topic = Buffer.alloc(currentSize).fill(currentFill) // A topic must be 32 bytes
+var currentHash = "sha256";
+var currentFill = "PENISLOVER";
+var topic = crypto.createHash(currentHash)
+  .update(currentFill)
+  .digest()
+
+const swarm = hyperswarm();
 
 
-const swarm = new Hyperswarm();
-
-const create = async () => {
-    const discovery = swarm.join(topic, { server: true, client: false })
-    await discovery.flushed() // Waits for the topic to be fully announced on the DHT
-}
+swarm.join(topic, function () {
+    console.log('fully joined...')
+  });
 // CRUD operations
 
-create();
 
 swarm.on('connection', (conn, info) => {
     // swarm will receive server connections
 
     process.stdin.pipe(conn).pipe(process.stdout);
 
-    conn.write('Successful connection to peer');
-    conn.on('data', data => console.log('client got message:', data.toString()))
+    conn.on('data', data => console.log('Connection:', data.toString()))
 });
 
 const lambda = async (req, res, next) => {
@@ -63,30 +63,22 @@ const executeCodeRequest = async (req, res, next) => {
 }
 
 const getKey = async (req, res, next) => { 
-    if (swarm.keyPair) {
-        // Return id getter from _id property
-        res.json({size: currentSize, fill: currentFill});
-    }
-    else {
-        res.status(500).json(
-            {
-                message:'A critical error occurred, no hypercore key was found, please try again later.'
-            }
-        )
-    }
+    res.json({hash: currentHash, fill: currentFill});
 }
 
 const connect = async (req, res, next) => {
-    let {size, fill} = req.body;
-    let newTopic = Buffer.alloc(size).fill(fill);
+    let {hash, fill} = req.body;
+    let newTopic = crypto.createHash(hash)
+    .update(fill)
+    .digest()
 
-    if (currentSize == size && currentFill == fill) {
+    if (currentHash == hash && currentFill == fill) {
         res.json({message: "Hyper core is already connected to topic"});
     }
     else {
-        swarm.join(newTopic, { server: false, client: true, announce: true})
+        swarm.join(newTopic);
         topic = newTopic;
-        currentSize = size;
+        currentHash = hash;
         currentFill = fill;
         res.json({message: "Hyper core successfully connected to new topic: " + newTopic}); 
     }

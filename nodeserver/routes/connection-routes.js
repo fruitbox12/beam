@@ -64,11 +64,10 @@ router.patch(
     [
         // Validation chain: check()..trim().not().isEmpty().withMessage()
        
-            check('size')
+            check('hash')
             .not()
             .isEmpty()
-            .isInt()
-            .withMessage("Size is required"),
+            .withMessage("hash is required"),
             check('fill')
             .not()
             .isEmpty()

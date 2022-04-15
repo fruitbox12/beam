@@ -17,6 +17,7 @@
     "editor": "^1.0.0",
     "express": "^4.17.2",
     "hyperbeam": "^2.0.1",
+    "hyperswarm-web": "^2.2.0",
     "mongoose": "^6.1.5",
     "morgan": "^1.10.0",
     "request": "^2.88.2",
