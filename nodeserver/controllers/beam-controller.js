@@ -76,7 +76,10 @@ const connect = async (req, res, next) => {
         res.json({message: "Hyper core is already connected to topic"});
     }
     else {
-        swarm.join(newTopic);
+        swarm.leave(topic)
+        swarm.join(newTopic, function(err) {
+
+        });
         topic = newTopic;
         currentHash = hash;
         currentFill = fill;
