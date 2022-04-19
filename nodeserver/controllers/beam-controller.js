@@ -1,6 +1,6 @@
 // Use object de-structuring
 const b64 = require('b64');
-const hyperswarm = require('hyperswarm-web')
+const hyperswarm = require('hyperswarm')
 const request = require('request');
 const { exec } = require("child_process");
 const crypto = require('crypto')
@@ -12,12 +12,12 @@ var topic = crypto.createHash(currentHash)
   .update(currentFill)
   .digest()
 
-const swarm = hyperswarm();
+const swarm = new hyperswarm();
 
 
 
 // CRUD operations
-
+swarm.join(topic);
 
 swarm.on('connection', (conn, info) => {
     // swarm will receive server connections
@@ -26,7 +26,10 @@ swarm.on('connection', (conn, info) => {
 
     conn.on('data', data => console.log('Connection:', data.toString()))
 });
-
+swarm.on('disconnection', (conn, details) => {
+    console.log(details.peer.host, 'disconnected!')
+    console.log('now we have', swarm.peers.length, 'peers!')
+  })
 const lambda = async (req, res, next) => {
 
     exec("docker run node:alpine", (error, stdout, stderr) => {
@@ -74,9 +77,7 @@ const connect = async (req, res, next) => {
         res.json({message: "Hyper core is already connected to topic"});
     }
     else {
-        swarm.join(newTopic, function(err) {
-
-        });
+        swarm.join(newTopic);
         topic = newTopic;
         currentHash = hash;
         currentFill = fill;
