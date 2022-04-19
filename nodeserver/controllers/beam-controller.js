@@ -6,26 +6,33 @@ const { exec } = require("child_process");
 const crypto = require('crypto')
 
 
-var currentHash = "sha256";
-var currentFill = "PENISLOVER";
-var topic = crypto.createHash(currentHash)
-  .update(currentFill)
-  .digest()
+var currentHash = "";
+var currentFill = "";
+var topic;
 
-const swarm = hyperswarm();
+const swarm = new hyperswarm({
+    maxPeers: 10,
+    // Websocket reconnect delay in milliseconds (optional) (default 1000)
+    wsReconnectDelay: 5000});
 
 
 
 // CRUD operations
 
-
-swarm.on('connection', (conn, info) => {
+swarm.on('connection', (conn, details) => {
     // swarm will receive server connections
 
     process.stdin.pipe(conn).pipe(process.stdout);
+    console.log('new connection!', details)
 
     conn.on('data', data => console.log('Connection:', data.toString()))
 });
+
+
+swarm.on('disconnection', (conn, details) => {
+    console.log(details.peer.host, 'disconnected!')
+    console.log('now we have', swarm.peers.length, 'peers!')
+  })
 
 const lambda = async (req, res, next) => {
 
@@ -74,9 +81,8 @@ const connect = async (req, res, next) => {
         res.json({message: "Hyper core is already connected to topic"});
     }
     else {
-        swarm.join(newTopic, function(err) {
-
-        });
+        swarm.join(newTopic);
+        
         topic = newTopic;
         currentHash = hash;
         currentFill = fill;
