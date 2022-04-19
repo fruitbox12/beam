@@ -13,7 +13,8 @@ var topic;
 const swarm = new hyperswarm({
     maxPeers: 10,
     // Websocket reconnect delay in milliseconds (optional) (default 1000)
-    wsReconnectDelay: 5000});
+    wsReconnectDelay: 5000
+});
 
 
 
