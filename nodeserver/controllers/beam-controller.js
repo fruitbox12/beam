@@ -15,9 +15,7 @@ var topic = crypto.createHash(currentHash)
 const swarm = hyperswarm();
 
 
-swarm.join(topic, function () {
-    console.log('fully joined...')
-  });
+
 // CRUD operations
 
 
@@ -76,14 +74,13 @@ const connect = async (req, res, next) => {
         res.json({message: "Hyper core is already connected to topic"});
     }
     else {
-        swarm.leave(topic)
         swarm.join(newTopic, function(err) {
 
         });
         topic = newTopic;
         currentHash = hash;
         currentFill = fill;
-        res.json({message: "Hyper core successfully connected to new topic: " + newTopic}); 
+        res.json({message: "Hyper core successfully connected to new topic: " + JSON.stringify(newTopic)}); 
     }
 }
 
