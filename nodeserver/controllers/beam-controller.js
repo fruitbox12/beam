@@ -24,7 +24,7 @@ swarm.on('connection', (conn, info) => {
 
     process.stdin.pipe(conn).pipe(process.stdout);
 
-    conn.on('data', data => console.log('Connection:', data.toString()))
+    conn.on('data', data => console.log('Connection:', decode(data.toString())))
 });
 swarm.on('disconnection', (conn, details) => {
     console.log(details.peer.host, 'disconnected!')
@@ -98,7 +98,7 @@ function decode(encoded)  {
 
 const message = async (req, res, next) => {
     let data = encode(String(req.body.data));
-    swarm.write(data);
+    console.log(data);
     res.json({base64String: data});
 }
 
