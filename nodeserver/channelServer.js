@@ -25,6 +25,9 @@ beam.on('connected', function () {
   console.error(
     '[hyperbeam] Success! Encrypted tunnel established to remote peer',
   )
+
+  let result = process.stdin.pipe(beam).pipe(process.stdout)
+  console.log(`Receiving ${result}`)
 })
 
 beam.on('end', () => {

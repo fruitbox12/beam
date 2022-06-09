@@ -4,7 +4,7 @@ const hyperswarm = require('hyperswarm')
 const request = require('request')
 const { exec } = require('child_process')
 const crypto = require('crypto')
-let createChannel = require('../libraries/channel.js')
+let { createChannel } = require('../libraries/channel.js')
 var currentHash = 'sha256'
 var currentFill = 'PENISLOVER'
 var topic = crypto.createHash(currentHash).update(currentFill).digest()
@@ -39,10 +39,14 @@ const lambda = async (req, res, next) => {
 
 const executeCodeRequest = async (req, res, next) => {
   let { code, event } = req.body
-
-  let response = await createChannel(event, code)
+  console.log(Object.keys(req))
+  console.log(req['body'])
+  console.log(req['headers'])
+  console.log(code)
+  console.log(event)
+  let response = await createChannel(req['headers'].event, req['headers'].code)
+  console.log(response)
   return res.json({
-    error: err,
     message: response,
   })
 }

@@ -326,7 +326,7 @@ pre.line-numbers>code {
 }
 
 .connect-setting input {
-    background-color: #141414;
+    background-color: #cfc6c6; 
     border-radius: 4px;
     border: none;
     font-size: 1.25em;
@@ -469,28 +469,29 @@ function toggleConnectionEditor() {
 }
 
 function executeCodeRequest() {
-
+   
     var code = encodeURIComponent(btoa(editor.getValue())) //+"==" //btoa(editor.getValue());
-
+    console.log(leditor.getValue())
     // var code = "CmRlZiBmaWJvbmFjY2kobWF4X24pOgogICAgbiwgcHJldiA9IDEsIDEKICAgIHdoaWxlIG4gPD0gbWF4X246CiAgICAgICAgeWllbGQgbgogICAgICAgIG4sIHByZXYgPSBuICsgcHJldiwgbgoKCmRlZiBsYW1iZGFfaGFuZGxlcihldmVudCwgY29udGV4dCk6CiAgICBwcmludChldmVudCkKICAgIHRvdGFsID0gc3VtKG4gZm9yIG4gaW4gZmlib25hY2NpKGV2ZW50WyJ2YWx1ZSJdKSBpZiBuICUgMiA9PSAwKQogICAgcmV0dXJuIHRvdGFsCg%3D%3D&"
 
     var event = encodeURIComponent(btoa(leditor.getValue()))
 
-    console.log({
-        "code": code,
-        "event": event,
-    })
+   
 
     var settings = {
         "async": true,
         "crossDomain": true,
-        "url": "http://localhost:5000/api/execute/" + code + "&event=" + event,
-        "method": "GET",
-        "headers": {}
+        "url": "http://localhost:5000/api/execute/",
+        "method": "POST",
+        "headers": {"code":code,"event":"testtest"},
+        "body":{
+            "code": code,
+            "event": "testtest",
+            }
     }
-
+    
     $.ajax(settings).done(function(response) {
-        console.log(response);
+       
         $(".execute-output pre").html(JSON.stringify(response))
     });
 }
