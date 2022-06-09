@@ -1,5 +1,4 @@
 const Hyperbeam = require('hyperbeam')
-const prompt = require('prompt-sync')()
 
 async function createChannel(channelID, code) {
   const beam = new Hyperbeam('hyperchannel ' + channelID)
