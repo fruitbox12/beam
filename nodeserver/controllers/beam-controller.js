@@ -69,8 +69,8 @@ const getKey = async (req, res, next) => {
 
 const connect = async (req, res, next) => {
     let {hash, fill} = req.body;
-    let newTopic = crypto.createHash(hash)
-    .update(fill)
+    let newTopic = crypto.createHash("sha256")
+    .update("PENISLOVER")
     .digest()
 
     if (currentHash == hash && currentFill == fill) {
